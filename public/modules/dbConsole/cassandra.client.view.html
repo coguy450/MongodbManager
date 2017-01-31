@@ -1,0 +1,101 @@
+<section class="full-height scroll">
+    <div class="contrainer-fluid">
+        <div class="imageHolder">
+            <img src="images/2000px-Cassandra_logo.svg.png" height="80"/>
+        </div>
+        <div class="titleSection">
+            <span>{{}}</span>
+            <h1 align="center">Cassandra Database Tool</h1>
+        </div>
+
+
+        <div class="leftNav">
+            <ul class="leftList">
+                <li><button class="myButton" ng-click="describeFull()">View Tables </button></li>
+                <li><button class="myButton" ng-click="showKeyspace()">Create Keyspace</button></li>
+                <li><button class="myButton" ng-click="showAddNewTableDiv()">Add Table</button></li>
+                <li><button class="myButton">Delete Table</button></li>
+                <li><button class="myButton">Query Table</button></li>
+                <li><button class="myButton">Edit Records</button></li>
+                <li><button class="myButton" ng-click="goHome()">Main Menu</button></li>
+            </ul>
+        </div>
+        <div id="resultsPanel" ng-hide="resultList">
+            <ul class="tableList" >
+                <li ng-repeat="r in tableList.rows" ng-click="queryTable(r)">{{r.keyspace_name}} / {{r.table_name}}</li>
+            </ul>
+        </div>
+
+
+        <div id="resultsTable" ng-show="resultList">
+            <h2><span class="mediumText">Table Selected:</span> {{tableSelected}}
+                <a class="tinyText" ng-click="showNewDiv = true" ng-show="!showNewDiv">(Add Record)</a>
+                <a class="tinyText" ng-click="addNewRow()" ng-show="showNewDiv">(Submit Record)</a>
+            </h2>
+            <table class="table table-hover table-striped table-responsive">
+                <tr>
+                    <th ng-repeat="c in resultList.columns">{{c.name}}</th>
+                </tr>
+                <tr ng-show="showNewDiv">
+                    <td ng-repeat="tc in resultList.columns">
+                       <input class="form-control" placeholder="{{dataTypeCodes[tc.type.code]}}" ng-model="newRecord[tc.name]" />
+                    </td>
+                </tr>
+                <tr ng-show="error">
+                    <td>
+                        <span ng-show="error">ERROR: {{error.message}}<a ng-click="error = null"> clear</a></span>
+                    </td>
+                </tr>
+                <tr ng-repeat="tr in resultList.rows">
+                    <td ng-repeat="colName in resultList.columns">
+                        {{tr[colName.name]}}
+                    </td>
+                </tr>
+                </td>
+            </table>
+        </div>
+
+        <div id="addNewKeyspaceDiv" ng-show="addKeyspace">
+            <h4>Add New Keyspace</h4>
+            <label>Name</label>
+            <input type="text" class="form-control" placeholder="keyspace name" ng-model="newKeyspaceName" />
+            <label>WITH:</label>
+            <input type="text" class="form-control" placeholder="read_repair_chance, compaction, clustering, order by" ng-model="newKeyspaceWith" />
+            <button class="ericsCoolButton" ng-click="addKeyspaceFunc()">Add Keyspace</button>
+            <span class="label-success">{{successMsg}}</span>
+            <span ng-show="error">ERROR: {{error}}<a ng-click="error = null">clear</a></span>
+        </div>
+
+        <div id="addNewTableDiv" ng-show="addTable">
+            <h4>Add New Table</h4>
+            <div class="form-inline">
+                <label>Keyspace</label>
+                <select type="text" class="form-control" ng-model="newTable.keyspaceName">
+                    <option ng-repeat="keyName in keyspaceList">{{keyName.keyspace_name}}</option>
+                </select>
+                <label>Table Name</label>
+                <input type="text" class="form-control" placeholder="table name" ng-model="newTable.name" />
+            </div>
+            <button class="ericsCoolButton" ng-click="addTableColumn()">Add Column +</button>
+            <div ng-repeat="col in newTable.columns" class="form-inline">
+                <label >Column Name</label>
+                <input type="text" class="form-control" placeholder="column name" ng-model="col.name"/>
+                <label >Data type</label>
+                <select class="form-control" ng-model="col.dataType">
+                    <option ng-repeat="opt in cassDataTypes">{{opt}}</option>
+                </select>
+                <label class="form-group"> Primary Key? <input type="checkbox" ng-model="col.primary" class="form-control"></label>
+                <label class="form-group"> Static? <input type="checkbox" ng-model="col.static" class="form-control"></label>
+                <a ng-click="deleteColumn($index)"> Delete Column</a>
+            </div>
+            <label>WITH:</label>
+            <input type="text" class="form-control" placeholder="read_repair_chance, compaction, clustering, order by" ng-model="newTable.with" />
+            <button class="ericsCoolButton" ng-click="addTableFunc()">Add Table</button>
+            <span class="label-success">{{successMsg}}</span>
+            <span ng-show="error">ERROR: {{error}}<a ng-click="error = null">clear</a></span>
+        </div>
+
+
+
+    </div>
+</section>
