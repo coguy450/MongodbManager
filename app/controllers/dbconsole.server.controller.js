@@ -1,6 +1,6 @@
 'use strict';
 var fs = require('fs-extra');
-var url;
+var url = 'mongodb://localhost:27017/mongoManager';
 var localDb;
 var request = require('superagent');
 var dbConn;
@@ -8,13 +8,14 @@ var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient
     , assert = require('assert');
 var async = require('async');
-
+var localDb = 'mongodb://localhost:27017';
 var dbSelected = 'mongoManager';
 var replSetName;
 function conMongo(callback) {
     if (!dbConn) {
         MongoClient.connect(url, {db: { autoReconnect: true, replicaSet: replSetName, connectTimeoutMS: 30000 }}, (err, db) => {
             if (err) {
+                console.error(err);
             } else {
                 dbConn = (!err ? db : null);
                 callback(dbConn);
@@ -61,6 +62,7 @@ exports.listDatabases = function(req, res) {
         if (db) {
             var adminDb = db.admin();
             adminDb.listDatabases(function(sErr, info) {
+                if (sErr) res.status(400).send(sErr);
                 res.status(200).send(info);
             })
         }
@@ -89,15 +91,22 @@ exports.changeDB = function(req, res) {
 }
 
 exports.changeServer = function(req, res) {
+
     if (dbConn) dbConn = null;
-    if (req.body.newdb === 'local') {
-        localDb = 'localhost';
+    const parsedName = JSON.parse(req.body.newdb);
+    console.log(parsedName.name);
+    if (parsedName.name === 'local') {
+        localDb = 'localhost:27017';
         url = 'mongodb://'+ localDb  + '/' + dbSelected;
+        console.log()
         res.status(200).send('Database Changed to: ' + req.body.newdb);
     } else {
-        // add new entries here
+        console.log(req.body);
+        localDb = parsedName.connAddress;
+        url = 'mongodb://' + parsedName.UN + ':' + parsedName.PW + localDb;
+        res.status(200).send('Database Changed to: ' + req.body.newdb);
+        console.log(url)
     }
-
 
 };
 
@@ -599,11 +608,9 @@ exports.seekOutConflict = ((req, res) => {
                             console.log(con)
                             if (con > 0) {
                                 wholeObj.push({name: item.name, id: item._id, count: con});
-
                             }
                             callback()
                         });
-
                     }, () => {
                         res.status(200).send(wholeObj);
                     })
@@ -617,6 +624,27 @@ exports.seekOutConflict = ((req, res) => {
             res.status(400).send('cant establish connection');
         }
     });
-    //  Suggestion [{"source":"usps","ruleName":"AddressSuggestions","fields":{"CITY_NAM":["Mc Kees Rocks"]},"suggestionWasFound":true}]
-    // Conflict: [{"id":"5834782c220000b91f461274","field":"streetAddress","value":"10350 N Scottsdale Rd P.O. Box 124","type":"Conflict-A-B-A","created":"2016-11-22T16:54:04.978Z"}]
+
 });
+
+exports.addConnection = ((req, res) => {
+    console.log(req.body);
+    conMongo((db) => {
+        const collection = db.collection('mongoConnections');
+        collection.insertOne(req.body.newConn, function(err, result) {
+            if (err) console.log(err);
+            else res.status(200).send(result);
+        })
+    })
+});
+
+exports.getConnections = ((req, res) => {
+    conMongo((db) => {
+        const collection = db.collection('mongoConnections');
+        collection.find({}).toArray((err, result) =>  {
+            console.log(result);
+            if (err) res.status(400).send(err);
+            else res.status(200).send(result);
+        })
+    })
+})

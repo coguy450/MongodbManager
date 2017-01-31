@@ -7,7 +7,18 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
         $scope.editShow = true;
         $scope.dbStats = false;
         $scope.collStatsShow = false;
+        $scope.connections = [{name: 'local'}];
 
+        $http.get('/dbconsole/getConnections').then(function onSuccess(info) {
+            console.log(info);
+            info.data.map((c) => {
+                console.log(c)
+                $scope.connections.push(c);
+            })
+
+        }).catch(function(err){
+            $scope.error = err.message;
+        });
         $scope.doFind = function(coll){
             $scope.showLoading = true;
             $scope.error = '';
@@ -73,6 +84,7 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
             $scope.doFind($scope.collViewing);
         };
         $scope.changeDatabase = function(dbIn) {
+            console.log(dbIn);
             $scope.collList = null;
             $scope.error = null;
             $scope.filterColls = '';
@@ -201,6 +213,16 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
                 .then(function onSuccess(data) {
 
                 })
+        };
+        $scope.showAddConn = () => {
+            $scope.showAddConDiv = true;
+        };
+        $scope.addConnection = () => {
+            $http.post('/dbconsole/addConnection', {newConn: $scope.newConnection})
+            .then(function onSuccess(data) {
+                    $scope.showAddConDiv = false;
+                    $scope.error = 'connection added';
+                })
         }
         $scope.ensureIndex = function() {
             if ($scope.key) {
@@ -258,26 +280,8 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
 
             })
         }
-        $scope.convertRecipes = (() => {
-            $http.get('/dbconsole/convertRecipes')
-                .then(function onSuccess(data) {
-                    $scope.error = 'success';
-                })
-        })
 
-        $scope.countCollection = function() {
-            $http.get('/dbconsole/restoreColl')
-            .then(function onSuccess(data) {
-                console.log(data);
-            })
-        }
 
-        $scope.fixIds = () => {
-            $http.get('/dbconsole/fixIds')
-                .then(function onSuccess(data) {
-                    $scope.error = data;
-                })
-        }
 
         $scope.rawFind = () => {
             $http.post('/dbconsole/rawFind', {rawFind: $scope.actionToDo, collName: $scope.collViewing, limit:$scope.limiter})

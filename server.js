@@ -64,6 +64,8 @@ app.get('/dbconsole/restoreColl', dbConsole.readJSONFile);
 app.get('/dbconsole/fixIds', dbConsole.fixIds);
 app.post('/dbconsole/rawFind', dbConsole.rawFind);
 app.get('/dbconsole/seekOutConflict', dbConsole.seekOutConflict);
+app.post('/dbconsole/addConnection', dbConsole.addConnection);
+app.get('/dbconsole/getConnections', dbConsole.getConnections);
 
 // Cassandra endpoints
 app.get('/cass/describeFull', cass.describeFull);

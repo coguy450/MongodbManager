@@ -4,10 +4,11 @@
             <alert ng-show="error" class="bg-danger" type="danger" close="error=null">{{error}}</alert>
             <div class="col-md-2">
               <select ng-model="dbSelected" ng-change="changeDatabase(dbSelected)" class="form-control">
-                <option>local</option>
+                <option ng-repeat="cn in connections" value={{cn}}>{{cn.name}}</option>
               </select>
+                <button ng-click="showAddConn()" type="button" class="btn btn-default">Add</button>
                 <button ng-click="goHome()" type="button" class="btn btn-default">Home</button>
-                  <button type="button" ng-click="serverStatus()" class="btn btn-danger">Server Stats</button>
+                <button type="button" ng-click="serverStatus()" class="btn btn-danger">Server Stats</button>
 
                 <button type="button" ng-click="getdbs()" class="btn btn-info">Change Database</button>
                 <div ng-show="collList" class="scrollThisDiv">
@@ -18,17 +19,25 @@
 
                     </ul>
                 </div>
+                <div ng-show="showAddConDiv" class="scrollThisDiv">
+                    <h4>Add a Connection</h4>
+                    <input type="text" placeholder="connection name" class="form-control" ng-model="newConnection.name"/>
+                    <input type="text" placeholder="connection url" class="form-control" ng-model="newConnection.connAddress"/>
+                    <input type="text" placeholder="connection username" class="form-control" ng-model="newConnection.UN"/>
+                    <input type="text" placeholder="connection password" class="form-control" ng-model="newConnection.PW"/>
+                    <button type="button" ng-click="addConnection()" class="btn btn-info">Add Connection</button>
+                </div>
+
                 <div ng-show="dbList">
                     <h4>List of Databases (click one to start)</h4>
                     <ul class="list-inline">
                         <li ng-repeat="d in dbList | orderBy:'name'"><a ng-click="selectDB(d.name)">{{d.name}}</a></li>
                     </ul>
                 </div>
-
-
             </div>
-            <div class="col-md-10 well searchBar">
 
+
+            <div class="col-md-10 well searchBar">
                 <div class="form-group col-sm-4">
                     <form ng-submit="advancedFind()">
                         <label>Search By: {{key}}</label>
@@ -56,13 +65,7 @@
                 <div class="form-group col-sm-2">
                     <label>Collections</label><br>
                     <button type="button" ng-click="countColls()" class="btn btn-danger">Count</button>
-                    <!--<button type="button" ng-click="convertRecipes()" class="btn btn-danger">convertRecipes</button>-->
-                    <!--<button type="button" ng-click="runCommand()" class="btn btn-danger">Cap that ass!</button>-->
-                    <!--<button type="button" ng-click="countCollection()" class="btn btn-danger">restore</button>-->
                     <button type="button" ng-click="showDrop = !showDrop" class="btn btn-danger">Drop</button>
-                    <!--<button type="button" ng-click="seekConflict()" class="btn btn-danger">seekConflict</button>-->
-
-                    <!--<button type="button" ng-click="fixIds()" class="btn btn-danger">Fix Ids</button>-->
                     <div ng-show="showDrop">
                         <h4 >Are you really sure you want to do this?</h4>
                         <button type="button" ng-click="dropCollection()" class="btn btn-danger">Yes, I'm sure</button>
@@ -110,7 +113,6 @@
                         <li>Objects: {{dbInfo.objects | number:0}}</li>
                         <li>Storage Size: {{dbInfo.storageSize | number:0}}</li>
                         <li>OK: {{dbInfo.ok}}</li>
-
                     </ul>
                 </div>
 
@@ -125,7 +127,6 @@
                         <li>Storage Size: {{collStats.storageSize | number:0}}</li>
                         <li>Name: {{collStats.ns}}</li>
                         <li>OK: {{collStats.ok}}</li>
-
                     </ul>
 
                 </div>
