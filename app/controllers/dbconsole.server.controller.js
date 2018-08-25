@@ -98,14 +98,15 @@ exports.changeServer = function(req, res) {
     if (parsedName.name === 'local') {
         localDb = 'localhost:27017';
         url = 'mongodb://'+ localDb  + '/' + dbSelected;
-        console.log()
+        res.status(200).send('Database Changed to: ' + req.body.newdb);
+    } else if (parsedName.name === 'mlab') {
+        url = 'mongodb://bitcoinNodeApp:dzwBgvX7syuVCLqm2Ash@ds123956.mlab.com:23956/bitcoin'
         res.status(200).send('Database Changed to: ' + req.body.newdb);
     } else {
         console.log(req.body);
         localDb = parsedName.connAddress;
         url = 'mongodb://' + parsedName.UN + ':' + parsedName.PW + localDb;
         res.status(200).send('Database Changed to: ' + req.body.newdb);
-        console.log(url)
     }
 
 };

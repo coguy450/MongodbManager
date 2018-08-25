@@ -7,7 +7,7 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
         $scope.editShow = true;
         $scope.dbStats = false;
         $scope.collStatsShow = false;
-        $scope.connections = [{name: 'local'}];
+        $scope.connections = [{name: 'local'}, {name: 'mlab'}];
 
         $http.get('/dbconsole/getConnections').then(function onSuccess(info) {
             console.log(info);
@@ -92,28 +92,28 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
             $scope.statusData = null;
             $http.post('/dbconsole/changeServer', {newdb: dbIn})
                 .then(function onSuccess(data) {
-                $http.get('/dbconsole/getdbs')
-                    .then(function onSuccess(info) {
-                        $scope.collList = null;
-                        $scope.showLoading = false;
-                        $scope.dbList = info.data.databases;
-                    })
+               // $http.get('/dbconsole/getdbs')
+                    //.then(function onSuccess(info) {
+                    //    $scope.collList = null;
+                    //    $scope.showLoading = false;
+                    //    $scope.dbList = info.data.databases;
+                    //})
                 //
-                //$http.get('/dbconsole/collections')
-                //    .then(function onSuccess(c) {
-                //        console.log(c);
-                //         $scope.collList = c.data;
-                //         $scope.showLoading = false;
-                //    })
-                //    .catch(function(err){
-                //         $scope.error = err;
-                //     });
+                $http.get('/dbconsole/collections')
+                    .then(function onSuccess(c) {
+                        console.log(c);
+                         $scope.collList = c.data;
+                         $scope.showLoading = false;
+                    })
+                    .catch(function(err){
+                         $scope.error = err;
+                     });
 
+              //})
+              //.catch(function(err) {
+              //  $scope.error = err.message;
               })
-              .catch(function(err) {
-                $scope.error = err.message;
-              })
-        };
+        }
         $scope.downloadColl = function(){
             $http.post('/dbconsole/download',{coll: $scope.collViewing})
                 .then(function onSuccess(link) {
