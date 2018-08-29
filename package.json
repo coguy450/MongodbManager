@@ -14,7 +14,7 @@
     "fs-extra": "^0.28.0",
     "mongodb": "2.2.34",
     "serve-favicon": "^2.3.0",
-    "superagent": "^1.8.3",
+    "superagent": "^3.8.3",
     "swig": "^1.4.2"
   }
 }
