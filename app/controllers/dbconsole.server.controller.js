@@ -13,7 +13,7 @@ var dbSelected = 'mongoManager';
 var replSetName;
 function conMongo(callback) {
     if (!dbConn) {
-        MongoClient.connect(url, {db: { autoReconnect: true, replicaSet: replSetName, connectTimeoutMS: 30000 }}, (err, db) => {
+        MongoClient.connect(url, { autoReconnect: true, replicaSet: replSetName, connectTimeoutMS: 30000 }, (err, db) => {
             if (err) {
                 console.error(err);
             } else {
@@ -98,7 +98,9 @@ exports.changeServer = function(req, res) {
     if (parsedName.name === 'local') {
         localDb = 'localhost:27017';
         url = 'mongodb://'+ localDb  + '/' + dbSelected;
-        console.log()
+        res.status(200).send('Database Changed to: ' + req.body.newdb);
+    } else if (parsedName.name === 'mlab') {
+        url = 'your url'
         res.status(200).send('Database Changed to: ' + req.body.newdb);
     } else {
         console.log(req.body);
@@ -321,36 +323,7 @@ exports.updateDoc = function(req, res) {
 }
 
 exports.specialUpdate = function(req, res) {
-    //MongoClient.connect('mongodb://ec2-54-224-112-88.compute-1.amazonaws.com/placeable', {db: { autoReconnect: true }}, (err, db) => {
-    //    var collection = db.collection('locations');
-    //    collection.find({clientRefId: '542b258a3200002405379f29'},{_id:1, userFields: 1}).toArray((err, results) => {
-    //
-    //        async.eachSeries(results, function (item, callback) {
-    //          // console.log(item.userFields);
-    //            Object.keys(item.userFields).map((field) => {
-    //                if (field === 'State (Province)' || field === 'Unique_ID' || field === 'Latitude' || field === 'Longitude' ||
-    //                    field === 'Hours' || field === 'Photos' || field === 'City' || field === 'Postal Code' || field === 'Facebook' || field === 'Alt Phone' ||
-    //                field === 'Phone Number' || field === 'Country' || field === 'Languages' || field === 'Yellow Pages' || field === 'Mobile Phone' || field === 'Street 2' ||
-    //                field === 'Open Closed' || field === 'Yahoo' || field === 'Google+ Local' || field === 'Payment Types' || field === 'Bing' || field === 'Name' || field === 'Factual' ||
-    //                    field === 'Yelp' || field === 'Local Page' || field === 'Fax Number' || field === 'Street' || field === 'Services 1' || field === 'Foursquare') {
-    //                    delete item.userFields[field];
-    //                    console.log('Will delete', field);
-    //                }
-    //            })
-    //            console.log(item);
-    //            collection.update({_id:item._id}, {$set: {userFields: item.userFields}}, function(updErr, updRes) {
-    //               if (!err) callback()
-    //            })
-    //
-    //        }, function done() {
-    //            console.log('done');
-    //        })
-    //
-    //
-    //
-    //    })
-    //
-    //})
+
 }
 
 exports.createIndex = function(req, res) {
