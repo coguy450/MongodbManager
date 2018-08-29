@@ -1,10 +1,8 @@
 'use strict';
 var express = require('express'),
-     app = express();
-var path = require('path');
-var bodyParser = require('body-parser');
-var swig  = require('swig');
-var controller = require('./app/controllers/server.controller.js');
+     app = express()
+var path = require('path')
+var bodyParser = require('body-parser')
 var cass = require('./app/controllers/cassandra.server.controller.js');
 var dbConsole = require('./app/controllers/dbconsole.server.controller.js');
 var localDB = '';
@@ -20,23 +18,16 @@ var intChecker = setInterval(() => {
  //   console.log(memsize);
     }, 30000);
 
-app.set('view engine', 'html');
-app.set('view options', {
-    layout: false
-});
-
-app.engine('html', swig.renderFile);
-app.set('view cache', false);
-// To disable Swig's cache, do the following:
-swig.setDefaults({ cache: false });
-app.use(express.static(__dirname + '/public'));
-var favicon = require('serve-favicon');
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(bodyParser.json());
+app.use(express.static(__dirname + '/public'))
+app.use('/favicon.ico', express.static(path.join(__dirname, '/public/images/favicon.ico')))
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Mongo Endpoints
-app.get('/',controller.index);
+app.get('/', (req, res) => {
+  console.log('hitting main', __dirname)
+  express.static(path.join(__dirname, '/public/index.html'))
+})
 app.get('/dbconsole/collections', dbConsole.getCollections);
 app.post('/dbconsole/basicfind', dbConsole.basicFind);
 app.post('/dbconsole/advancedFind', dbConsole.advancedFind);
@@ -102,11 +93,6 @@ app.get('/promises', (req, res) => {
     c.catch(function(err) {
         console.log('countdown error' + err);
     })
-
-
-
-
-
 
 })
 

@@ -92,31 +92,7 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
             $scope.statusData = null;
             $http.post('/dbconsole/changeServer', {newdb: dbIn})
                 .then(function onSuccess(data) {
-<<<<<<< HEAD
-                // $http.get('/dbconsole/getdbs')
-                //     .then(function onSuccess(info) {
-                //         $scope.collList = null;
-                //         $scope.showLoading = false;
-                //         $scope.dbList = info.data.databases;
-                //     })
-                //
-                $http.get('/dbconsole/collections')
-                   .then(function onSuccess(c) {
-                       console.log(c);
-                        $scope.collList = c.data;
-                        $scope.showLoading = false;
-                   })
-                   .catch(function(err){
-                        $scope.error = err;
-                    });
-=======
-               // $http.get('/dbconsole/getdbs')
-                    //.then(function onSuccess(info) {
-                    //    $scope.collList = null;
-                    //    $scope.showLoading = false;
-                    //    $scope.dbList = info.data.databases;
-                    //})
-                //
+
                 $http.get('/dbconsole/collections')
                     .then(function onSuccess(c) {
                         console.log(c);
@@ -126,7 +102,6 @@ angular.module('app').controller('dbConsoleController', ['$scope','$http',
                     .catch(function(err){
                          $scope.error = err;
                      });
->>>>>>> 8e946f3f9567789ef58a2a6e62d67b6fa68643f5
 
               //})
               //.catch(function(err) {
