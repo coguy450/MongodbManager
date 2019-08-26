@@ -3,7 +3,7 @@ var express = require('express'),
      app = express()
 var path = require('path')
 var bodyParser = require('body-parser')
-var cass = require('./app/controllers/cassandra.server.controller.js');
+// var cass = require('./app/controllers/cassandra.server.controller.js');
 var dbConsole = require('./app/controllers/dbconsole.server.controller.js');
 var localDB = '';
 //var localDB = 'localhost';
@@ -59,11 +59,11 @@ app.post('/dbconsole/addConnection', dbConsole.addConnection);
 app.get('/dbconsole/getConnections', dbConsole.getConnections);
 
 // Cassandra endpoints
-app.get('/cass/describeFull', cass.describeFull);
-app.post('/cass/queryTable', cass.queryTable);
-app.post('/cass/newTable', cass.newTable);
-app.post('/cass/addKey', cass.createKeyspace);
-app.post('/cass/addNewRecord', cass.addRow);
+// app.get('/cass/describeFull', cass.describeFull);
+// app.post('/cass/queryTable', cass.queryTable);
+// app.post('/cass/newTable', cass.newTable);
+// app.post('/cass/addKey', cass.createKeyspace);
+// app.post('/cass/addNewRecord', cass.addRow);
 
 app.get('/testStuff', dbConsole.grabGoogle);
 

@@ -1,6 +1,6 @@
 'use strict';
 var fs = require('fs-extra');
-var url = 'mongodb://localhost:27017/mongoManager';
+var url = 'mongodb://localhost:27017';
 var localDb;
 var request = require('superagent');
 var dbConn;
@@ -8,7 +8,7 @@ var ObjectID = require('mongodb').ObjectID;
 var MongoClient = require('mongodb').MongoClient
     , assert = require('assert');
 var async = require('async');
-var localDb = 'mongodb://localhost:27017';
+//var localDb = 'mongodb://localhost:27017';
 var dbSelected = 'mongoManager';
 var replSetName;
 function conMongo(callback) {
@@ -72,7 +72,7 @@ exports.listDatabases = function(req, res) {
 exports.changeDB = function(req, res) {
     dbConn = null;
     dbSelected = req.body.db;
-    url = 'mongodb://'+ localDb  + '/' + dbSelected;
+    url = 'mongodb://localhost:27017/' + dbSelected;
     conMongo((db) => {
         if (db) {
             db.listCollections({}).toArray(function(error, names) {
